@@ -28,7 +28,7 @@ if [ "$KALLITHEA_FIX_PERMISSION" = "TRUE"  ]; then
     chown -R kallithea:kallithea /home/kallithea/.ssh
     chmod 700 /home/kallithea/.ssh
     chmod 600 /home/kallithea/.ssh/authorized_keys
-    
+
     KALLITHEA_FIX_REPOS_PERMISSION=$(echo ${KALLITHEA_FIX_REPOS_PERMISSION:-FALSE} | tr [:lower:] [:upper:])
     if [ "$KALLITHEA_FIX_REPOS_PERMISSION" = "TRUE"  ]; then
         echo "Fix repos permissions ..."
@@ -176,8 +176,8 @@ if [ ! -e "$KALLITHEA_INI" ]; then
         --email ${KALLITHEA_ADMIN_MAIL:-"admin@example.com"} \
         --repos /kallithea/repos \
         --force-yes
-    if [ $? -ne 0 ]; then echo "Failed to initialize database."; exit 1; fi 
-    
+    if [ $? -ne 0 ]; then echo "Failed to initialize database."; exit 1; fi
+
     # If successful, make it the desired file
     mv "$KALLITHEA_INI_TMP" "$KALLITHEA_INI" || { echo "Failed to create ini."; exit 1; }
 fi
@@ -194,4 +194,4 @@ echo "Start SSH server ..."
 /etc/init.d/ssh start
 
 echo "Start kallithea ..."
-su-exec kallithea:kallithea gearbox serve -c "$KALLITHEA_INI"
+su-exec kallithea:kallithea kallithea-cli celery-run -c "$KALLITHEA_INI"
